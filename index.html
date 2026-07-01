@@ -285,21 +285,45 @@
 
     /* TESTEMUNHOS */
     .test-bg { border-top:1px solid rgba(201,160,61,.08); }
-    .test-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+    .test-carousel { display:grid; justify-items:center; gap:26px; }
+    .test-carousel-inner { width:100%; max-width:920px; }
     .test-card {
       background:rgba(13,34,64,.75); border:1px solid rgba(201,160,61,.14);
       border-radius:10px; padding:36px 28px; position:relative;
-      transition:transform .3s, box-shadow .3s, border-color .3s;
+      transition:transform .3s, box-shadow .3s, border-color .3s, opacity .35s ease, transform .35s ease;
+      will-change: opacity, transform;
+      opacity:1;
     }
-    .test-card:hover { transform:translateY(-5px); box-shadow:var(--shadow-sm),var(--glow); border-color:rgba(201,160,61,.38); }
+    .test-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-sm),var(--glow); border-color:rgba(201,160,61,.38); }
+    .test-card.fade-out { opacity:.35; transform:translateY(6px); }
     .test-card::before { content:'\201C'; position:absolute; top:16px; left:22px; font-family:var(--ff-title); font-size:4rem; color:rgba(201,160,61,.14); line-height:1; }
     .stars-row { display:flex; gap:4px; margin-bottom:12px; }
     .stars-row i { color:var(--gold); font-size:.82rem; }
-    .test-text { font-size:.93rem; color:var(--offwhite); line-height:1.75; margin-bottom:22px; margin-top:14px; font-style:italic; }
+    .test-text { font-size:.95rem; color:var(--offwhite); line-height:1.8; margin-bottom:18px; margin-top:14px; font-style:italic; }
     .test-author { display:flex; align-items:center; gap:14px; }
     .author-avatar { width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,var(--navy-light),var(--navy-mid)); border:1px solid rgba(201,160,61,.3); display:flex; align-items:center; justify-content:center; font-family:var(--ff-title); font-size:1rem; color:var(--gold); font-weight:700; flex-shrink:0; }
     .author-info strong { display:block; font-family:var(--ff-ui); font-size:.83rem; font-weight:600; color:var(--white); }
     .author-info span { font-size:.76rem; color:var(--muted); font-family:var(--ff-ui); }
+    .carousel-controls { display:grid; gap:12px; justify-items:center; margin-top:18px; }
+    .carousel-dot-row { display:flex; gap:10px; align-items:center; justify-content:center; flex-wrap:wrap; }
+    .carousel-dot { width:12px; height:12px; border-radius:50%; background:rgba(255,255,255,.18); border:1px solid rgba(201,160,61,.2); cursor:pointer; transition:transform .2s, background .2s, border-color .2s; }
+    .carousel-dot:hover { transform:scale(1.15); }
+    .carousel-dot.active { background:var(--gold); border-color:var(--gold); }
+    .carousel-nav { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+    .carousel-expand { display:flex; justify-content:flex-end; }
+    .carousel-expand .btn {
+      padding:10px 20px;
+      font-size:.82rem;
+      font-style:italic;
+      min-width:180px;
+    }
+    .carousel-expand .btn:hover { transform:none; }
+    #testimonialCard { min-height:230px; }
+    @media (max-width:767px) {
+      .carousel-expand { justify-content:center; }
+      .carousel-nav { width:100%; justify-content:center; }
+      .carousel-expand .btn { width:100%; max-width:320px; }
+    }
 
     /* AUTOR */
     .autor-section { border-top:1px solid rgba(201,160,61,.08); }
@@ -428,7 +452,7 @@
         Não simplifica o Evangelho, torna-o <strong>praticável</strong>.
       </p>
       <div class="hero-btns">
-        <a href="#" target="_blank" rel="noopener" class="btn btn-primary">
+        <a href="#" data-link="compra" target="_blank" rel="noopener" class="btn btn-primary">
           <i class="fa fa-book-open"></i> Quero o livro agora
         </a>
         <a href="https://wa.me/5541999722711" target="_blank" rel="noopener" class="btn btn-whatsapp">
@@ -630,7 +654,7 @@
       <p style="font-family:var(--ff-ui); font-size:.84rem; color:var(--muted); margin-bottom:20px; letter-spacing:.05em;">
         Este é apenas 1 dos 100 capítulos. Cada um com a mesma profundidade e aplicação prática.
       </p>
-      <a href="#" target="_blank" rel="noopener" class="btn btn-primary" style="font-size:.9rem; padding:16px 40px">
+      <a href="#" data-link="compra" target="_blank" rel="noopener" class="btn btn-primary" style="font-size:.9rem; padding:16px 40px">
         <i class="fa fa-book-open"></i> Quero os outros 99 capítulos
       </a>
     </div>
@@ -646,29 +670,25 @@
       <p>O que muda não é o conhecimento. É a atitude. Veja o que leitores dizem sobre a diferença entre saber e aplicar.</p>
     </div>
     <div class="ornament reveal"><span>✦ depoimentos ✦</span></div>
-    <div class="test-grid">
-      <div class="test-card reveal">
-        <div class="stars-row"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></div>
-        <p class="test-text">"Li sobre misericórdia e percebi que estava preso à mágoa de anos. Decidi perdoar uma pessoa do trabalho. O livro não me deu teoria, me deu um passo concreto para agir naquele mesmo dia."</p>
-        <div class="test-author">
-          <div class="author-avatar">AP</div>
-          <div class="author-info"><strong>Ana Paula S.</strong><span>Curitiba, PR</span></div>
+    <div class="test-carousel reveal" id="testCarousel" aria-live="polite">
+      <div class="test-carousel-inner">
+        <div class="test-card" id="testimonialCard">
+          <div class="stars-row" id="testimonialStars"></div>
+          <p class="test-text" id="testimonialText"></p>
+          <div class="test-author">
+            <div class="author-avatar" id="testimonialAvatar"></div>
+            <div class="author-info"><strong id="testimonialAuthorName"></strong><span id="testimonialAuthorLocation"></span></div>
+          </div>
+        </div>
+        <div class="carousel-expand">
+          <button class="btn btn-secondary" id="toggleExpandBtn" type="button">Ver depoimento completo</button>
         </div>
       </div>
-      <div class="test-card reveal" style="transition-delay:.1s">
-        <div class="stars-row"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></div>
-        <p class="test-text">"O método me tirou da teoria de vez. Hoje eu paro, leio, me pergunto e ajusto minha atitude. São 10 minutos diários que mudaram a forma como vivo minha fé. Muito mais do que qualquer devocional."</p>
-        <div class="test-author">
-          <div class="author-avatar">MP</div>
-          <div class="author-info"><strong>Marcos P.</strong><span>São Paulo, SP</span></div>
-        </div>
-      </div>
-      <div class="test-card reveal" style="transition-delay:.2s">
-        <div class="stars-row"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-alt"></i></div>
-        <p class="test-text">"Passei anos lendo a Bíblia sem saber como aplicá-la. O JESUS100 me deu estrutura. As perguntas reflexivas me incomodam do jeito certo, me fazem olhar para o que preciso realmente mudar."</p>
-        <div class="test-author">
-          <div class="author-avatar">CL</div>
-          <div class="author-info"><strong>Cláudia L.</strong><span>Florianópolis, SC</span></div>
+      <div class="carousel-controls">
+        <div class="carousel-dot-row" id="testimonialDots" aria-label="Navegação de depoimentos"></div>
+        <div class="carousel-nav">
+          <button class="btn btn-secondary" id="prevTestimonial" type="button">Anterior</button>
+          <button class="btn btn-secondary" id="nextTestimonial" type="button">Próximo</button>
         </div>
       </div>
     </div>
@@ -715,7 +735,7 @@
         <em>Um convite a viver com mais fé, maturidade e coerência, por dentro e por fora.</em>
       </p>
       <div class="cta-btns">
-        <a href="#" target="_blank" rel="noopener" class="btn btn-primary" style="padding:18px 44px; font-size:.92rem;">
+        <a href="#" data-link="compra" target="_blank" rel="noopener" class="btn btn-primary" style="padding:18px 44px; font-size:.92rem;">
           <i class="fa fa-book-open"></i> Adquirir o JESUS100 agora
         </a>
         <a href="https://wa.me/5541999722711" target="_blank" rel="noopener" class="btn btn-whatsapp" style="padding:18px 36px; font-size:.92rem;">
@@ -724,7 +744,7 @@
       </div>
       <p class="cta-nota">
         <i class="fa fa-shield-halved"></i> Compra segura &nbsp;·&nbsp;
-        <i class="fa fa-truck-fast"></i> Entrega imediata (digital)
+        <i class="fa fa-truck-fast"></i> Entrega garantida com rastreio
       </p>
     </div>
   </div>
@@ -761,6 +781,11 @@
 </footer>
 
 <script>
+
+// ===== CONFIGURAÇÕES GLOBAIS =====
+  const COMPRA_LINK = "https://produto.mercadolivre.com.br/MLB-4832329971-jesus100-100-frases-de-jesus-cristo-para-a-vida-_JM"; 
+  // =================================
+
   (function(){
     const c=document.getElementById('stars');
     for(let i=0;i<70;i++){
@@ -796,6 +821,244 @@
       btn.innerHTML='<i class="fa fa-bars"></i>';
     }));
   })();
+
+  (function(){
+    const testimonials = [
+      {
+        preview: '"A leitura deste livro tem sido uma experiência muito especial para mim. Mais do que um livro, ele se tornou uma fonte constante de reflexão, aprendizado e direcionamento."',
+        full: '"A leitura deste livro tem sido uma experiência muito especial para mim. Mais do que um livro, ele se tornou uma fonte constante de reflexão, aprendizado e direcionamento.\n\nO formato da obra, baseado em passagens bíblicas, proporciona uma conexão muito pessoal com a leitura. Tenho o hábito de fazer uma oração e abrir o livro diariamente, buscando uma mensagem para aquele momento. Em inúmeras ocasiões, encontrei ensinamentos, reflexões e direcionamentos que pareciam chegar exatamente quando eu precisava deles.\n\nA forma como cada mensagem é apresentada é profunda, mas ao mesmo tempo acessível, permitindo que cada leitura revele novos significados. É uma obra que não apenas transmite conhecimento, mas também convida ao crescimento pessoal, ao fortalecimento da fé e ao desenvolvimento espiritual.\n\nSou muito grata ao Valter por compartilhar sua experiência e sabedoria de forma tão generosa. Recomendo a leitura a todos que buscam inspiração, propósito e uma maneira prática de refletir sobre os ensinamentos bíblicos no dia a dia."',
+        author: 'Gislaine Voichki',
+        location: 'Curitiba, PR',
+        avatar: 'GV',
+        stars: 5
+      },
+      {
+        preview: '"Conheci o livro Jesus100 de uma forma muito linda, daquelas que a gente sabe que foi cuidado e direção do Espírito Santo. Em um certo dia, tive um desentendimento com um colega... e justamente naquele mesmo dia recebi o livro. Quando abri, fui direto para a página 47..."',
+        full: `"Conheci o livro Jesus100 de uma forma muito linda, daquelas que a gente sabe que foi cuidado e direção do Espírito Santo. ✨
+
+Em um certo dia, tive um desentendimento com um colega de trabalho. Meu coração ficou apertado, sabe? E justamente naquele mesmo dia recebi o livro. Quando abri, fui direto para a página 47, no capítulo 12, e encontrei essas palavras:
+
+“Misericórdia não é ignorar o erro. É recusar-se a reduzir a pessoa ao erro. É interromper o ciclo da dureza. É escolher restaurar em vez de sentenciar.
+Quando lembramos que todos somos frágeis, limitados e necessitados de graça, o julgamento perde espaço e a compaixão encontra caminho.
+Quem pratica misericórdia torna-se mais humano. E o coração que aprende a perdoar torna-se mais leve.
+A dureza aprisiona. A misericórdia liberta.
+Onde há misericórdia, nasce reconciliação. E onde há reconciliação, cresce a paz.”
+
+Naquele momento, senti Deus falando ao meu coração de uma forma muito amorosa, como um Pai fala para um filho. 🥹
+Ele me fez lembrar o quanto somos falhos, limitados e o quanto precisamos de misericórdia todos os dias.
+Ali eu entendi que não fazia sentido alimentar mágoas no meu coração. Perdoei meu colega e também pedi perdão, porque reconheci que todos nós erramos e precisamos da graça de Deus.
+Esse livro, em poucas palavras, me ensinou ainda mais sobre o amor de Jesus e sobre aquilo que Ele veio nos ensinar aqui na Terra: amar o próximo como a nós mesmos. ❤️
+Sou muito grata, porque Deus usou exatamente aquela leitura para tocar e transformar meu coração naquele dia."`,
+        author: 'Geovana Martins',
+        location: 'Assessora Comercial - Curitiba, PR',
+        avatar: 'GM',
+        stars: 5
+      },
+      {
+        preview: `"Sinceramente, foi algo que me tocou antes mesmo de eu saber quem era o autor. Quando me enviaram a imagem do livro, sem eu saber que havia sido escrito pelo Valter, algo dentro de mim foi profundamente movido. Foi como se minha alma reconhecesse que aquele livro carregava algo especial. Naquele instante eu senti: 'Eu quero e eu preciso desse livro.'"`,
+        full: `Eu tive a imensa alegria e gratidão de receber o livro Jesus100.
+E, sinceramente, foi algo que me tocou antes mesmo de eu saber quem era o autor.
+Quando me enviaram a imagem do livro, sem eu saber que havia sido escrito pelo Valter, algo dentro de mim foi profundamente movido. Foi como se minha alma reconhecesse que aquele livro carregava algo especial. Naquele instante eu senti: “Eu quero e eu preciso desse livro.”
+E ele chegou em um momento muito importante da minha vida.
+Ao começar a leitura, compreendi que não se trata apenas de um livro comum. É um livro inspirado pelo Espírito Santo. Existe presença, verdade e profundidade em cada palavra. É uma leitura que não passa apenas pela mente — ela toca a alma, conduz à reflexão e desperta algo muito profundo dentro de nós.
+Sinto uma enorme gratidão ao Valter por ter sido sensível à voz do Espírito Santo, por ter respeitado esse chamado e por ter feito o movimento de escrever essa obra. Nem todos têm coragem de ouvir, sentir e compartilhar aquilo que vem do Alto. E é justamente isso que torna esse livro tão especial.
+Jesus100 é um livro que traz paz, consciência, presença e alegria. É uma leitura que, quando vivida de coração aberto, tem o poder de transformar a vida das pessoas.
+O Espírito Santo tocou o coração do Valter para que essa mensagem pudesse alcançar muitos outros corações. E eu tenho certeza de que esse livro ainda tocará muitas vidas, despertando fé, amor, reflexão e conexão espiritual.
+Receber esse livro foi um presente.
+E ler essas palavras foi sentir Deus falando também dentro de mim.
+Ass: Michel Bastian Vidal.`,
+        author: 'Michel B. Vidal',
+        location: 'Terapeuta e Constelador - Lapa, PR',
+        avatar: 'MV',
+        stars: 5
+      },
+      {
+        preview: '"Bem-aventurado Valter Vieira Ribeiro!!! Que livro bacana. Meus parabéns, ótima estruturação, didática e aconselhamento. Muito bom mesmo. Esse é daqueles que não podemos passar adiante. Tem que ficar na cabeceira. Uma excelente leitura/aprendizado/reflexao no dia-dia. Muito obrigado pela lembrança, meu amigo. Um ótimo feriado e um grande abraço."',
+        full: '"Bem-aventurado Valter Vieira Ribeiro!!! Que livro bacana. Meus parabéns, ótima estruturação, didática e aconselhamento. Muito bom mesmo. Esse é daqueles que não podemos passar adiante. Tem que ficar na cabeceira. Uma excelente leitura/aprendizado/reflexao no dia-dia. Muito obrigado pela lembrança, meu amigo. Um ótimo feriado e um grande abraço."',
+        author: 'Mario Duarte',
+        location: 'Engenheiro Agrônomo - Avaré, SP',
+        avatar: 'MD',
+        stars: 5
+      },
+      {
+        preview: '"Valter! Que livro incrível! Parece que você se conectou com o divino e serviu de canal para essa escrita. Ao ler partes aleatoriamente com perguntas em mente, as respostas vieram de forma impressionante. É uma experiência profunda que todos deveriam viver. Muito obrigada por se permitir criar algo tão grandioso. Que Deus te abençoe sempre!"',
+        full: '"Valter! Que livro incrível! Parece que você se conectou com o divino e serviu de canal para essa escrita. Ao ler partes aleatoriamente com perguntas em mente, as respostas vieram de forma impressionante. É uma experiência profunda que todos deveriam viver. Muito obrigada por se permitir criar algo tão grandioso. Que Deus te abençoe sempre!"',
+        author: 'Vera Boeing',
+        location: 'Psicologa - Curitiba, PR',
+        avatar: 'VB',
+        stars: 5
+      }
+    ];
+
+    const carouselEl = document.getElementById('testCarousel');
+      const cardEl = document.getElementById('testimonialCard');
+      const textEl = document.getElementById('testimonialText');
+      const authorName = document.getElementById('testimonialAuthorName');
+      const authorLocation = document.getElementById('testimonialAuthorLocation');
+      const avatarEl = document.getElementById('testimonialAvatar');
+      const starsEl = document.getElementById('testimonialStars');
+      const toggleBtn = document.getElementById('toggleExpandBtn');
+      const prevBtn = document.getElementById('prevTestimonial');
+      const nextBtn = document.getElementById('nextTestimonial');
+      const dotsRow = document.getElementById('testimonialDots');
+
+      let currentIndex = 0;
+      let expanded = false;
+      let autoRotateId = null;
+      let transitionTimeout = null;
+
+      const starIcon = name => `<i class="fa fa-star"></i>`;
+      const halfStarIcon = `<i class="fa fa-star-half-alt"></i>`;
+
+      function renderStars(value) {
+        const stars = [];
+        const fullStars = Math.floor(value);
+        for (let i = 0; i < fullStars; i++) stars.push(starIcon());
+        if (value - fullStars >= 0.5) stars.push(halfStarIcon);
+        while (stars.length < 5) stars.push('<i class="fa fa-star" style="opacity:.25"></i>');
+        return stars.join('');
+      }
+
+      function renderDots() {
+        dotsRow.innerHTML = testimonials.map((_, index) => {
+          return `<button class="carousel-dot" type="button" data-index="${index}" aria-label="Depoimento ${index + 1}"></button>`;
+        }).join('');
+        dotsRow.querySelectorAll('.carousel-dot').forEach(button => {
+          button.addEventListener('click', () => {
+            currentIndex = Number(button.dataset.index);
+            expanded = false;
+            updateDisplay();
+            resetAutoRotate();
+          });
+        });
+      }
+
+      // Função para verificar se o preview já é igual ao full (ou se a diferença é muito pequena)
+      function shouldShowExpandButton(index) {
+        const item = testimonials[index];
+        if (!item.full || !item.preview) return false;
+        
+        // Remove espaços extras e quebras de linha para comparação
+        const previewClean = item.preview.replace(/\s+/g, ' ').trim();
+        const fullClean = item.full.replace(/\s+/g, ' ').trim();
+        
+        // Se forem idênticos, não mostra o botão
+        if (previewClean === fullClean) return false;
+        
+        // Opcional: verificar se o full é apenas ligeiramente maior que o preview
+        // (menos de 15% de diferença no número de caracteres)
+        const diffRatio = Math.abs(fullClean.length - previewClean.length) / fullClean.length;
+        if (diffRatio < 0.15) return false;
+        
+        return true;
+      }
+
+      function updateDisplay() {
+        const item = testimonials[currentIndex];
+        starsEl.innerHTML = renderStars(item.stars);
+        authorName.textContent = item.author;
+        authorLocation.textContent = item.location;
+        avatarEl.textContent = item.avatar;
+        
+        // Decide se mostra o botão de expandir
+        const showExpand = shouldShowExpandButton(currentIndex);
+        if (showExpand) {
+          toggleBtn.style.display = 'inline-flex';
+          toggleBtn.textContent = expanded ? 'Mostrar menos' : 'Ver depoimento completo';
+        } else {
+          toggleBtn.style.display = 'none';
+          // Se o botão está escondido, força expanded = false
+          if (expanded) {
+            expanded = false;
+          }
+        }
+        
+        dotsRow.querySelectorAll('.carousel-dot').forEach((dot, index) => {
+          dot.classList.toggle('active', index === currentIndex);
+        });
+
+        // Aplica fade e insere o texto com quebras de linha
+        if (cardEl) {
+          clearTimeout(transitionTimeout);
+          cardEl.classList.add('fade-out');
+          transitionTimeout = setTimeout(() => {
+            // Se não tem botão, sempre mostra o full (que é igual ao preview)
+            const rawText = (!showExpand || expanded) ? item.full : item.preview;
+            textEl.innerHTML = rawText.replace(/\n/g, '<br>');
+            cardEl.classList.remove('fade-out');
+          }, 220);
+        } else {
+          const rawText = (!showExpand || expanded) ? item.full : item.preview;
+          textEl.innerHTML = rawText.replace(/\n/g, '<br>');
+        }
+
+        // Controle do auto‑rotate conforme estado expandido e visibilidade do botão
+        if (expanded && showExpand) {
+          stopAutoRotate();
+        } else {
+          startAutoRotate();
+        }
+      }
+
+      function stopAutoRotate() {
+        clearInterval(autoRotateId);
+        autoRotateId = null;
+      }
+
+      function startAutoRotate() {
+        // Só inicia se NÃO estiver expandido
+        if (expanded) return;
+        stopAutoRotate();
+        autoRotateId = setInterval(() => {
+          currentIndex = (currentIndex + 1) % testimonials.length;
+          expanded = false;
+          updateDisplay();
+        }, 7000);
+      }
+
+      function resetAutoRotate() {
+        startAutoRotate();
+      }
+
+      // Eventos dos botões
+      prevBtn.addEventListener('click', () => {
+        currentIndex = (currentIndex + testimonials.length - 1) % testimonials.length;
+        expanded = false;
+        updateDisplay();
+      });
+
+      nextBtn.addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % testimonials.length;
+        expanded = false;
+        updateDisplay();
+      });
+
+      toggleBtn.addEventListener('click', () => {
+        expanded = !expanded;
+        updateDisplay();
+      });
+
+      // Pausa ao passar o mouse (apenas se não estiver expandido)
+      if (carouselEl) {
+        carouselEl.addEventListener('mouseenter', () => {
+          if (!expanded) stopAutoRotate();
+        });
+        carouselEl.addEventListener('mouseleave', () => {
+          if (!expanded) startAutoRotate();
+        });
+      }
+
+      renderDots();
+      updateDisplay();
+
+        // ===== GERENCIADOR DE LINKS DE COMPRA =====
+      document.querySelectorAll('[data-link="compra"]').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          window.open(COMPRA_LINK, '_blank');
+        });
+      });
+    })();  
 </script>
 </body>
 </html>
